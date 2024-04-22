@@ -17,6 +17,7 @@ new playerKills[32]
 
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
+	//RegisterHam(Ham_Killed, "player", "hamPlayerKilled", 1);
 	killgoal = register_cvar("kill_goal","50")
 	register_event( "DeathMsg", "death", "a" )
 	register_clcmd("say", "ready");
@@ -40,24 +41,27 @@ public ready(id)
 	    get_user_name(id, name, 31);
 	    read_argv(1, buffer, 255);
 	    parse(buffer, buffer1, 32, buffer2, 32);
-	    
-		if (equali(buffer1, "!ready", 0))
+	    if (equali(buffer1, "!ready", 0))
 	    {
-
-			//code for ready up
-			if(numPlayerReady == 0){
-				playerReady[id] = 1;
-				client_print(0, print_chat, "%s is ready", name);
-				numPlayerReady++;
-			}
-			else if(numPlayerReady == 1){
-				client_print(0, print_chat, "%s is ready", name);
-				client_print(0, print_chat, "***PREPARE TO FIGHT****");
-				playerReady[id] = 2;
-				slayPlayers();
-				client_cmd(0,"mp3 play sound/fight.mp3"); //plays countdown
-			}
-	    }
+		
+	       //code for ready up
+	       if(numPlayerReady == 0){
+		playerReady[id] = 1;
+		client_print(0, print_chat, "%s is ready", name);
+		numPlayerReady++;
+		}
+		else if(numPlayerReady == 1){
+		client_print(0, print_chat, "%s is ready", name);
+		client_print(0, print_chat, "***PREPARE TO FIGHT****");
+		playerReady[id] = 2;
+		slayPlayers();
+		
+		client_cmd(0,"mp3 play sound/fight.mp3"); //plays countdown
+		
+		}
+	       
+	      }
+	      }
 	return 0;
 }
 
@@ -101,13 +105,14 @@ public death() {
 	    }
 	    
 	    if(playerKills[attacker] == get_pcvar_num(killgoal)) {
-			client_print(0, print_chat, "%s HAS WON THE MATCH", aname);
-			client_cmd(0,"mp3 play sound/victory.mp3");
-			gameON = 0;
-			playerReady[attacker] = 0
-			playerReady[victim] = 0
-			playerKills[attacker] = 0
-			playerKills[victim] = 0
+		//if he has killed 3 this round execute a function
+		client_print(0, print_chat, "%s HAS WON THE MATCH", aname);
+		client_cmd(0,"mp3 play sound/victory.mp3");
+		gameON = 0;
+		playerReady[attacker] = 0
+		playerReady[victim] = 0
+		playerKills[attacker] = 0
+		playerKills[victim] = 0
 	    }
 	    
 	    
