@@ -27,8 +27,8 @@ public plugin_init() {
 
 public plugin_precache() 
     { 
-    precache_sound("sound/fight.mp3")
-    precache_sound("sound/victory.mp3")
+    precache_generic("sound/fight.mp3")
+    precache_generic("sound/victory.mp3")
     }
 
 public ready(id)
