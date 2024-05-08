@@ -13,16 +13,15 @@ new killgoal;
 new playerReady[32];
 new numPlayerReady;
 new gameON = 0;
-new playerKills[32]
+new playerKills[32];
 
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	//RegisterHam(Ham_Killed, "player", "hamPlayerKilled", 1);
-	killgoal = register_cvar("kill_goal","50")
-	register_event( "DeathMsg", "death", "a" )
+	killgoal = register_cvar("kill_goal","50");
+	register_event( "DeathMsg", "death", "a" );
 	register_clcmd("say", "ready");
 	register_clcmd("say !test", "test");
-	
 }
 
 public plugin_precache() 
@@ -98,6 +97,10 @@ public death() {
 		client_print(0, print_chat, "%s killed themselves and now has %d kills", vname, playerKills[victim]);
 		
 	    }
+		else if (attacker == 0){
+		playerKills[victim]--;
+		client_print(0, print_chat, "%s died to fall damage and now has %d kills", vname, playerKills[victim]);
+		}
 	    else if(attacker != victim){
 		playerKills[attacker]++;
 	    
@@ -108,6 +111,7 @@ public death() {
 		//if he has killed 3 this round execute a function
 		client_print(0, print_chat, "%s HAS WON THE MATCH", aname);
 		client_cmd(0,"mp3 play sound/victory.mp3");
+		server_cmd("mp_timelimit 1");
 		gameON = 0;
 		playerReady[attacker] = 0
 		playerReady[victim] = 0
