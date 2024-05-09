@@ -21,7 +21,6 @@ public plugin_init() {
 	killgoal = register_cvar("kill_goal","50");
 	register_event( "DeathMsg", "death", "a" );
 	register_clcmd("say", "ready");
-	register_clcmd("say !test", "test");
 }
 
 public plugin_precache() 
@@ -40,9 +39,20 @@ public ready(id)
 	    get_user_name(id, name, 31);
 	    read_argv(1, buffer, 255);
 	    parse(buffer, buffer1, 32, buffer2, 32);
+		new teamCheck;
+		teamCheck = get_user_team(id)
 	    if (equali(buffer1, "!ready", 0))
 	    {
-		
+			// Check if player is on a team
+			if (teamCheck != 1 && teamCheck != 2){
+				client_print(0, print_chat, "You must be on a team to ready up")
+				return 0;
+			}
+			// Check if a player has already readied up
+			if (playerReady[id] == 1 || playerReady[id] == 2){
+				client_print(0, print_chat, "You have already readied up!")
+				return 0;
+			}
 	       //code for ready up
 	       if(numPlayerReady == 0){
 		playerReady[id] = 1;
@@ -89,6 +99,7 @@ public death() {
 	    new attacker = read_data(1);
 	    new victim = read_data(2);
 	    new aname[32], vname[32];
+		new winningTeam;
 	    get_user_name(attacker, aname, 31);
 	    get_user_name(victim, vname, 31);
 	       
@@ -108,7 +119,8 @@ public death() {
 	    }
 	    
 	    if(playerKills[attacker] == get_pcvar_num(killgoal)) {
-		//if he has killed 3 this round execute a function
+		winningTeam = get_user_team(attacker)
+		log_message("[1v1 MATCH RESULT] Team %d Wins %s %d %s %d", winningTeam, aname, playerKills[attacker], vname, playerKills[victim])
 		client_print(0, print_chat, "%s HAS WON THE MATCH", aname);
 		client_cmd(0,"mp3 play sound/victory.mp3");
 		server_cmd("mp_timelimit 1");
